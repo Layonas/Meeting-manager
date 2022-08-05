@@ -1,0 +1,15 @@
+C:\Users\Kompiukas\Desktop\MeetingManager\MeetingManager\bin\Debug\net6.0\MeetingManager.exe
+C:\Users\Kompiukas\Desktop\MeetingManager\MeetingManager\bin\Debug\net6.0\MeetingManager.deps.json
+C:\Users\Kompiukas\Desktop\MeetingManager\MeetingManager\bin\Debug\net6.0\MeetingManager.runtimeconfig.json
+C:\Users\Kompiukas\Desktop\MeetingManager\MeetingManager\bin\Debug\net6.0\MeetingManager.dll
+C:\Users\Kompiukas\Desktop\MeetingManager\MeetingManager\bin\Debug\net6.0\MeetingManager.pdb
+C:\Users\Kompiukas\Desktop\MeetingManager\MeetingManager\obj\Debug\net6.0\MeetingManager.csproj.AssemblyReference.cache
+C:\Users\Kompiukas\Desktop\MeetingManager\MeetingManager\obj\Debug\net6.0\MeetingManager.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Kompiukas\Desktop\MeetingManager\MeetingManager\obj\Debug\net6.0\MeetingManager.AssemblyInfoInputs.cache
+C:\Users\Kompiukas\Desktop\MeetingManager\MeetingManager\obj\Debug\net6.0\MeetingManager.AssemblyInfo.cs
+C:\Users\Kompiukas\Desktop\MeetingManager\MeetingManager\obj\Debug\net6.0\MeetingManager.csproj.CoreCompileInputs.cache
+C:\Users\Kompiukas\Desktop\MeetingManager\MeetingManager\obj\Debug\net6.0\MeetingManager.dll
+C:\Users\Kompiukas\Desktop\MeetingManager\MeetingManager\obj\Debug\net6.0\refint\MeetingManager.dll
+C:\Users\Kompiukas\Desktop\MeetingManager\MeetingManager\obj\Debug\net6.0\MeetingManager.pdb
+C:\Users\Kompiukas\Desktop\MeetingManager\MeetingManager\obj\Debug\net6.0\MeetingManager.genruntimeconfig.cache
+C:\Users\Kompiukas\Desktop\MeetingManager\MeetingManager\obj\Debug\net6.0\ref\MeetingManager.dll
