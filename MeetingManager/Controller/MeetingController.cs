@@ -115,8 +115,6 @@ namespace MeetingManager.Controller
         {
             var meetings = getMeetings();
 
-            Console.Clear();
-
             if (meetings?.Count() == 0)
             {
                 Console.WriteLine("I'm sorry, there are no meetings currently.");
@@ -127,7 +125,7 @@ namespace MeetingManager.Controller
 
             for (int i = 0; i < meetings?.Count(); i++)
             {
-                Console.WriteLine((i + 1) + $": {meetings.ElementAt(i)}");
+                Console.WriteLine((i + 1) + $":\n{meetings.ElementAt(i)}");
             }
 
             int index = Convert.ToInt32(Console.ReadLine());
@@ -151,6 +149,35 @@ namespace MeetingManager.Controller
                 {
                     PropertyNameCaseInsensitive = true
                 });
+        }
+
+        public static void addAttendee(string name, Meeting meeting, DateTime start)
+        {
+            var attendees = AttendeeController.getAttendees();
+
+            Attendee checkAttendee = new Attendee(name, Enumerable.Empty<Meeting>().Append(meeting),
+                Enumerable.Empty<DateTime>().Append(start));
+
+            if (attendees.Contains(checkAttendee))
+            {
+                var attendee = attendees.First(a => a.Name.CompareTo(checkAttendee.Name) == 0);
+                if (attendee.Meetings.Contains(meeting))
+                {
+                    Console.WriteLine($"{name} is already in this meeting");
+                    return;
+                }
+                else
+                {
+                    attendee.Meetings = attendee.Meetings.Append(meeting);
+                    attendee.AttendTime = attendee.AttendTime.Append(start);
+                }
+            }
+            else
+            {
+                attendees = attendees.Append(checkAttendee);
+            }
+
+            AttendeeController.updateAttendees(attendees, FixedTypes.Operation.Add);
         }
     }
 }

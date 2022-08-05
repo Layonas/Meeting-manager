@@ -34,9 +34,19 @@ namespace MeetingManager.Models
             EndDate = endDate;
         }
 
-        public override string? ToString()
+        public string? serialize()
         {
             return JsonSerializer.Serialize(this);
+        }
+
+        public override string? ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine($"Meeting name: {Name}, responsible person for the meeting: {ResponsiblePerson}");
+            builder.AppendLine($"Meeting description: {Description}");
+            builder.AppendLine($"Category: {Category}, Type: {Type}");
+            builder.AppendLine($"Meeting starts at: {StartDate.ToString("yyyy-MM-dd HH:mm")} and ends at {EndDate.ToString("yyyy-MM-dd HH:mm")}");
+            return builder.ToString();
         }
 
         public override bool Equals(object? obj)

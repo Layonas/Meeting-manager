@@ -1,4 +1,5 @@
 ﻿using MeetingManager.Controller;
+using MeetingManager.Models;
 
 bool cancel = false;
 bool quit = false;
@@ -45,14 +46,25 @@ switch (action)
         break;
 
     case 2:
-        var meeting = MeetingController.chooseMeeting();
-        if (meeting is null)
+        Console.Clear();
+        var deletingMeeting = MeetingController.chooseMeeting();
+        if (deletingMeeting is null)
             break;
-        MeetingController.deleteMeeting(userName, meeting);
+        MeetingController.deleteMeeting(userName, deletingMeeting);
         break;
 
     case 3:
-
+        Console.Clear();
+        Console.WriteLine("Enter the name of an attendee: ");
+        string? name = Console.ReadLine();
+        var attendeeMeeting = MeetingController.chooseMeeting();
+        if (attendeeMeeting is null)
+            break;
+        Console.WriteLine($"Write his starting date between {attendeeMeeting.StartDate.ToString("HH:mm")}" +
+            $" and {attendeeMeeting.EndDate.ToString("HH:mm")} with format of HH:mm");
+        DateTime date;
+        DateTime.TryParseExact(Console.ReadLine(), "HH:mm", null, System.Globalization.DateTimeStyles.None, out date);
+        MeetingController.addAttendee(name, attendeeMeeting, date);
         break;
 
     case 4:

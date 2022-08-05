@@ -21,5 +21,11 @@ namespace MeetingManager.Enums
             Live,
             InPerson
         }
+
+        public enum Operation
+        {
+            Add,
+            Delete
+        }
     }
 }
