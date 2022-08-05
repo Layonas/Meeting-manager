@@ -11,13 +11,13 @@ namespace MeetingManager.Models
     {
         public string Name { get; set; }
         public IEnumerable<Meeting> Meetings { get; set; }
-        public IEnumerable<DateTime> AttendTime { get; set; }
+        public List<DateTime> AttendTime { get; set; }
 
         public Attendee()
         {
         }
 
-        public Attendee(string name, IEnumerable<Meeting> meetings, IEnumerable<DateTime> attendTime)
+        public Attendee(string name, IEnumerable<Meeting> meetings, List<DateTime> attendTime)
         {
             Name = name;
             Meetings = meetings;

@@ -156,7 +156,7 @@ namespace MeetingManager.Controller
             var attendees = AttendeeController.getAttendees();
 
             Attendee checkAttendee = new Attendee(name, Enumerable.Empty<Meeting>().Append(meeting),
-                Enumerable.Empty<DateTime>().Append(start));
+                new List<DateTime>() { start });
 
             if (attendees.Contains(checkAttendee))
             {
@@ -169,7 +169,8 @@ namespace MeetingManager.Controller
                 else
                 {
                     attendee.Meetings = attendee.Meetings.Append(meeting);
-                    attendee.AttendTime = attendee.AttendTime.Append(start);
+                    //attendee.AttendTime = attendee.AttendTime.Append(start);
+                    attendee.AttendTime.Add(start);
                 }
             }
             else

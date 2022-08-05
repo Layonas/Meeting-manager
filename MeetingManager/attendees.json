@@ -1,6 +1,11 @@
 [
   {
     "Name": "Jona",
+    "Meetings": [],
+    "AttendTime": []
+  },
+  {
+    "Name": "Jonas",
     "Meetings": [
       {
         "Name": "Building",
@@ -13,7 +18,24 @@
       }
     ],
     "AttendTime": [
-      "2022-08-05T10:30:00"
+      "2022-08-05T10:00:00"
+    ]
+  },
+  {
+    "Name": "Petras",
+    "Meetings": [
+      {
+        "Name": "Testing",
+        "ResponsiblePerson": "Petras",
+        "Description": "Testing meeting faze",
+        "Category": 2,
+        "Type": 0,
+        "StartDate": "2020-10-10T10:20:00",
+        "EndDate": "2020-10-10T10:30:00"
+      }
+    ],
+    "AttendTime": [
+      "2022-08-05T10:20:00"
     ]
   }
 ]

@@ -68,14 +68,22 @@ switch (action)
         break;
 
     case 4:
-
+        Console.Clear();
+        Console.WriteLine("Choose an attendee:");
+        var attendee = AttendeeController.chooseAttendee();
+        if (attendee is null)
+            break;
+        Console.WriteLine("Choose a meeting to remove:");
+        var removeAttendeeMeeting = AttendeeController.chooseAttendeeMeeting(attendee);
+        if (removeAttendeeMeeting is null)
+        {
+            Console.WriteLine($"{attendee.Name} does not contain any meetings.");
+            break;
+        }
+        AttendeeController.removeMeeting(attendee, removeAttendeeMeeting);
         break;
 
     case 5:
-
-        break;
-
-    case 6:
 
         break;
 }
