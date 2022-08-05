@@ -45,7 +45,10 @@ switch (action)
         break;
 
     case 2:
-
+        var meeting = MeetingController.chooseMeeting();
+        if (meeting is null)
+            break;
+        MeetingController.deleteMeeting(userName, meeting);
         break;
 
     case 3:

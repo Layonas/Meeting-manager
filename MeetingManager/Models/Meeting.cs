@@ -38,5 +38,17 @@ namespace MeetingManager.Models
         {
             return JsonSerializer.Serialize(this);
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Meeting meeting &&
+                   Name == meeting.Name &&
+                   ResponsiblePerson == meeting.ResponsiblePerson &&
+                   Description == meeting.Description &&
+                   Category == meeting.Category &&
+                   Type == meeting.Type &&
+                   StartDate == meeting.StartDate &&
+                   EndDate == meeting.EndDate;
+        }
     }
 }

@@ -87,17 +87,66 @@ namespace MeetingManager.Controller
             }
         }
 
-        private static IEnumerable<Meeting>? getMeetings()
+        public static void deleteMeeting(string name, Meeting meeting)
+        {
+            var meetings = getMeetings();
+
+            if (meeting.ResponsiblePerson.CompareTo(name) != 0)
+            {
+                Console.WriteLine("You cannot delete a meeting you are not responsible for!");
+                return;
+            }
+            meetings = meetings.Where(v => !v.Equals(meeting));
+
+            File.WriteAllText(path, "");
+
+            using (var writer = File.OpenWrite(path))
+            {
+                JsonSerializer.Serialize<IEnumerable<Meeting>>(new Utf8JsonWriter(writer, new JsonWriterOptions
+                {
+                    Indented = true,
+                    SkipValidation = true
+                }),
+                meetings);
+            }
+        }
+
+        public static Meeting? chooseMeeting()
+        {
+            var meetings = getMeetings();
+
+            Console.Clear();
+
+            if (meetings?.Count() == 0)
+            {
+                Console.WriteLine("I'm sorry, there are no meetings currently.");
+                return null;
+            }
+
+            Console.WriteLine("Choose a meeting");
+
+            for (int i = 0; i < meetings?.Count(); i++)
+            {
+                Console.WriteLine((i + 1) + $": {meetings.ElementAt(i)}");
+            }
+
+            int index = Convert.ToInt32(Console.ReadLine());
+
+            return meetings?.ElementAt(index - 1);
+        }
+
+        public static IEnumerable<Meeting>? getMeetings()
         {
             if (!File.Exists(path))
                 return Enumerable.Empty<Meeting>();
 
             using var reader = File.OpenText(path);
+            var json = reader.ReadToEnd();
 
-            if (reader.ReadToEnd().Length < 3)
+            if (json.Length < 3)
                 return Enumerable.Empty<Meeting>();
 
-            return JsonSerializer.Deserialize<Meeting[]>(reader.ReadToEnd(),
+            return JsonSerializer.Deserialize<IEnumerable<Meeting>>(json,
                 new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
