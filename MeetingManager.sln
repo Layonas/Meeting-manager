@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingManager", "MeetingManager\MeetingManager.csproj", "{74ED779E-6BDE-4532-8BCB-E4C71A997475}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestsForMeetingManager", "UnitTestsForMeetingManager\UnitTestsForMeetingManager.csproj", "{16B49C69-108C-457B-AF8B-BA364560C23E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{74ED779E-6BDE-4532-8BCB-E4C71A997475}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74ED779E-6BDE-4532-8BCB-E4C71A997475}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74ED779E-6BDE-4532-8BCB-E4C71A997475}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16B49C69-108C-457B-AF8B-BA364560C23E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16B49C69-108C-457B-AF8B-BA364560C23E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16B49C69-108C-457B-AF8B-BA364560C23E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16B49C69-108C-457B-AF8B-BA364560C23E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
