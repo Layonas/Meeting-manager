@@ -10,7 +10,7 @@ using System.Text.Json;
 
 namespace MeetingManager.Controller
 {
-    internal class MeetingController
+    public class MeetingController
     {
         public static string path
         {
@@ -20,30 +20,28 @@ namespace MeetingManager.Controller
             }
         }
 
-        public static void createMeeting(ref bool quit, ref bool cancel)
+        public static Meeting createMeeting(ref bool quit, ref bool cancel)
         {
-            Console.Clear();
-
             Console.WriteLine("Write a meeting name:");
             var name = Console.ReadLine();
             cancel = name.CompareTo("cancel") == 0 ? true : false;
             quit = name.CompareTo("quit") == 0 ? true : false;
             if (quit)
-                return;
+                return new Meeting();
             if (cancel)
-                return;
+                return new Meeting();
 
             Console.WriteLine("Write a responsible person:");
             var rp = Console.ReadLine();
             quit = rp.CompareTo("quit") == 0 ? true : false;
             if (quit)
-                return;
+                return new Meeting();
 
             Console.WriteLine("Write a meeting description:");
             var description = Console.ReadLine();
             quit = description.CompareTo("quit") == 0 ? true : false;
             if (quit)
-                return;
+                return new Meeting();
 
             Console.WriteLine("Pick a category:");
             var categories = Enum.GetValues(typeof(FixedTypes.Category))
@@ -56,7 +54,7 @@ namespace MeetingManager.Controller
 
             var categoryIndex = Utils.Utils.action(1, categories.Count(), ref quit);
             if (quit)
-                return;
+                return new Meeting();
 
             var category = categories.ElementAt(categoryIndex - 1);
 
@@ -69,7 +67,7 @@ namespace MeetingManager.Controller
 
             var typeIndex = Utils.Utils.action(1, types.Count(), ref quit);
             if (quit)
-                return;
+                return new Meeting();
 
             var type = types.ElementAt(typeIndex - 1);
 
@@ -78,48 +76,42 @@ namespace MeetingManager.Controller
             Console.WriteLine($"Write a starting date for the meeting with format of {pattern}:");
             DateTime startDate = Utils.Utils.readDate(pattern, ref quit);
             if (quit)
-                return;
+                return new Meeting();
 
             Console.WriteLine($"Write a ending date for the meeting with format of {pattern}:");
             DateTime endDate = Utils.Utils.readDate(pattern, ref quit);
             if (quit)
-                return;
+                return new Meeting();
 
-            Meeting meeting = new Meeting(name, rp, description, category, type, startDate, endDate);
-
-            addAttendee(rp, meeting, startDate);
-
-            saveMeeting(meeting);
+            return new Meeting(name, rp, description, category, type, startDate, endDate);
         }
 
-        private static void saveMeeting(Meeting meeting)
+        public static IEnumerable<Meeting> saveMeeting(Meeting meeting)
         {
             var meetings = getMeetings();
             meetings = meetings.Append(meeting);
 
-            using (var writer = File.OpenWrite(path))
-            {
-                JsonSerializer.Serialize<IEnumerable<Meeting>>(new Utf8JsonWriter(writer, new JsonWriterOptions
-                {
-                    Indented = true,
-                    SkipValidation = true
-                }),
-                meetings);
-            }
+            return meetings;
         }
 
-        public static void deleteMeeting(string name, Meeting meeting)
+        public static IEnumerable<Meeting> removeMeeting(string name, Meeting meeting)
         {
             var meetings = getMeetings();
 
             if (meeting.ResponsiblePerson.CompareTo(name) != 0)
             {
                 Console.WriteLine("You cannot delete a meeting you are not responsible for!");
-                return;
+                return Enumerable.Empty<Meeting>();
             }
             meetings = meetings.Where(v => !v.Equals(meeting));
 
-            File.WriteAllText(path, "");
+            return meetings;
+        }
+
+        public static void updateMeetings(IEnumerable<Meeting> meetings, FixedTypes.Operation operation)
+        {
+            if (operation == FixedTypes.Operation.Delete)
+                File.WriteAllText(path, "");
 
             using (var writer = File.OpenWrite(path))
             {
@@ -174,7 +166,7 @@ namespace MeetingManager.Controller
                 });
         }
 
-        public static void addAttendee(string name, Meeting meeting, DateTime start)
+        public static IEnumerable<Attendee> addAttendee(string name, Meeting meeting, DateTime start)
         {
             var attendees = AttendeeController.getAttendees();
 
@@ -187,7 +179,7 @@ namespace MeetingManager.Controller
                 if (attendee.Meetings.Contains(meeting))
                 {
                     Console.WriteLine($"{name} is already in this meeting.");
-                    return;
+                    return Enumerable.Empty<Attendee>();
                 }
                 else if (attendee.Meetings.Any(m => m.StartDate <= meeting.StartDate && m.EndDate >= meeting.StartDate
                 || m.StartDate <= meeting.StartDate && m.EndDate <= meeting.EndDate && m.EndDate >= meeting.StartDate
@@ -208,7 +200,7 @@ namespace MeetingManager.Controller
                 attendees = attendees.Append(checkAttendee);
             }
 
-            AttendeeController.updateAttendees(attendees, FixedTypes.Operation.Add);
+            return attendees;
         }
 
         public static void ListMeeting(IEnumerable<Meeting> meetings)

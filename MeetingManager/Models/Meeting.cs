@@ -8,7 +8,7 @@ using MeetingManager.Enums;
 
 namespace MeetingManager.Models
 {
-    internal class Meeting
+    public class Meeting
     {
         public string Name { get; set; }
         public string ResponsiblePerson { get; set; }

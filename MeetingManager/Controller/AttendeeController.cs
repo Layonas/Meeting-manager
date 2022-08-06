@@ -10,7 +10,7 @@ using MeetingManager.Utils;
 
 namespace MeetingManager.Controller
 {
-    internal class AttendeeController
+    public class AttendeeController
     {
         public static string path
         {
@@ -93,12 +93,12 @@ namespace MeetingManager.Controller
             return attendee.Meetings.ElementAt(index - 1);
         }
 
-        public static void removeMeeting(Attendee attendee, Meeting meeting)
+        public static Attendee removeMeeting(Attendee attendee, Meeting meeting)
         {
             if (meeting.ResponsiblePerson.CompareTo(attendee.Name) == 0)
             {
                 Console.WriteLine($"Cannot remove the attendee from the meeting he is responsible!");
-                return;
+                return new Attendee();
             }
             int index = -1;
             for (int i = 0; i < attendee.Meetings.Count(); i++)
@@ -107,12 +107,17 @@ namespace MeetingManager.Controller
             attendee.Meetings = attendee.Meetings.Where(m => !m.Equals(meeting));
             attendee.AttendTime.RemoveAt(index);
 
+            return attendee;
+        }
+
+        public static IEnumerable<Attendee> updateAttendee(Attendee attendee)
+        {
             var attendees = getAttendees();
 
             attendees.First(a => a.Equals(attendee)).Meetings = attendee.Meetings;
             attendees.First(a => a.Equals(attendee)).AttendTime = attendee.AttendTime;
 
-            updateAttendees(attendees, FixedTypes.Operation.Delete);
+            return attendees;
         }
     }
 }

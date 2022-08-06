@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MeetingManager.Controller
 {
-    internal class FilteringController
+    public class FilteringController
     {
         private static List<string> filterOptions = new List<string>() { "description", "responsible person",
             "category", "type", "dates", "number of attendees"};
@@ -31,7 +31,7 @@ namespace MeetingManager.Controller
             return filters.ElementAt(filterIndex - 1);
         }
 
-        public static IEnumerable<Meeting> applyFiltering(FixedTypes.Filter filter, ref bool quit)
+        public static IEnumerable<Meeting> applyFiltering(IEnumerable<Meeting> meetings, IEnumerable<Attendee> attendees, FixedTypes.Filter filter, ref bool quit)
         {
             var filteredMeetings = Enumerable.Empty<Meeting>();
             switch (filter)
@@ -44,46 +44,42 @@ namespace MeetingManager.Controller
                         quit = true;
                         break;
                     }
-                    filteredMeetings = filterByDescription(description);
+                    filteredMeetings = filterByDescription(meetings, description);
                     break;
 
                 case FixedTypes.Filter.ResponsiblePerson:
-                    filteredMeetings = filterByResposiblePerson(ref quit);
+                    filteredMeetings = filterByResposiblePerson(meetings, ref quit);
                     break;
 
                 case FixedTypes.Filter.Category:
-                    filteredMeetings = filterByCategory(ref quit);
+                    filteredMeetings = filterByCategory(meetings, ref quit);
                     break;
 
                 case FixedTypes.Filter.Type:
-                    filteredMeetings = filterByType(ref quit);
+                    filteredMeetings = filterByType(meetings, ref quit);
                     break;
 
                 case FixedTypes.Filter.Dates:
-                    filteredMeetings = filterByDates(ref quit);
+                    filteredMeetings = filterByDates(meetings, ref quit);
                     break;
 
                 case FixedTypes.Filter.Attendees:
-                    filteredMeetings = filterByAttendees(ref quit);
+                    filteredMeetings = filterByAttendees(meetings, attendees, ref quit);
                     break;
             }
 
             return filteredMeetings;
         }
 
-        private static IEnumerable<Meeting> filterByDescription(string input)
+        private static IEnumerable<Meeting> filterByDescription(IEnumerable<Meeting> meetings, string input)
         {
-            var meetings = MeetingController.getMeetings();
-
             meetings = meetings.Where(m => m.Description.ToLower().Contains(input.ToLower()));
 
             return meetings;
         }
 
-        private static IEnumerable<Meeting> filterByResposiblePerson(ref bool quit)
+        private static IEnumerable<Meeting> filterByResposiblePerson(IEnumerable<Meeting> meetings, ref bool quit)
         {
-            var meetings = MeetingController.getMeetings();
-
             Console.WriteLine("Choose the person to filter by:");
             bool cancel = false;
             var person = AttendeeController.chooseAttendee(ref quit, ref cancel);
@@ -95,7 +91,7 @@ namespace MeetingManager.Controller
             return meetings;
         }
 
-        private static IEnumerable<Meeting> filterByCategory(ref bool quit)
+        private static IEnumerable<Meeting> filterByCategory(IEnumerable<Meeting> meetings, ref bool quit)
         {
             var categories = Enum.GetValues(typeof(FixedTypes.Category)).Cast<FixedTypes.Category>();
 
@@ -110,10 +106,10 @@ namespace MeetingManager.Controller
             if (quit)
                 return Enumerable.Empty<Meeting>();
 
-            return MeetingController.getMeetings().Where(m => m.Category == categories.ElementAt(categoryIndex - 1));
+            return meetings.Where(m => m.Category == categories.ElementAt(categoryIndex - 1));
         }
 
-        private static IEnumerable<Meeting> filterByType(ref bool quit)
+        private static IEnumerable<Meeting> filterByType(IEnumerable<Meeting> meetings, ref bool quit)
         {
             var types = Enum.GetValues(typeof(FixedTypes.Type)).Cast<FixedTypes.Type>();
 
@@ -128,10 +124,10 @@ namespace MeetingManager.Controller
             if (quit)
                 return Enumerable.Empty<Meeting>();
 
-            return MeetingController.getMeetings().Where(m => m.Type == types.ElementAt(typeIndex - 1));
+            return meetings.Where(m => m.Type == types.ElementAt(typeIndex - 1));
         }
 
-        private static IEnumerable<Meeting> filterByDates(ref bool quit)
+        private static IEnumerable<Meeting> filterByDates(IEnumerable<Meeting> meetings, ref bool quit)
         {
             var pattern = "yyyy-MM-dd";
             Console.WriteLine($"Date format should be: {pattern}");
@@ -156,8 +152,6 @@ namespace MeetingManager.Controller
                 start = true;
             if (endDateString is null || endDateString.Length != 0)
                 end = true;
-
-            var meetings = MeetingController.getMeetings();
 
             if (start && end)
             {
@@ -184,9 +178,8 @@ namespace MeetingManager.Controller
             return meetings;
         }
 
-        private static IEnumerable<Meeting> filterByAttendees(ref bool quit)
+        private static IEnumerable<Meeting> filterByAttendees(IEnumerable<Meeting> meetings, IEnumerable<Attendee> attendees, ref bool quit)
         {
-            string test = ">3?<7";
             Console.WriteLine("Enter expression to filter by attendee count:");
             Console.WriteLine("Usage [<>num?<num]");
             Console.WriteLine("Example: >3?<7 - meaning more than 3 but less than 7");
@@ -213,8 +206,6 @@ namespace MeetingManager.Controller
                 return Enumerable.Empty<Meeting>();
             }
 
-            var meetings = MeetingController.getMeetings();
-            var attendees = AttendeeController.getAttendees();
             Dictionary<Meeting, int> pairs = new Dictionary<Meeting, int>();
 
             foreach (var m in meetings)

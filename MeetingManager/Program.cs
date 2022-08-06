@@ -1,4 +1,5 @@
 ﻿using MeetingManager.Controller;
+using MeetingManager.Enums;
 using MeetingManager.Models;
 using MeetingManager.Utils;
 using System.Text.RegularExpressions;
@@ -31,7 +32,16 @@ while (!quit)
         switch (action)
         {
             case 1:
-                MeetingController.createMeeting(ref quit, ref cancel);
+                Console.Clear();
+                Meeting meeting = MeetingController.createMeeting(ref quit, ref cancel);
+                if (quit || cancel)
+                    break;
+                var attendees = MeetingController.addAttendee(meeting.ResponsiblePerson, meeting, meeting.StartDate);
+                AttendeeController.updateAttendees(attendees, FixedTypes.Operation.Add);
+
+                var meetings = MeetingController.saveMeeting(meeting);
+                MeetingController.updateMeetings(meetings, FixedTypes.Operation.Add);
+
                 break;
 
             case 2:
@@ -39,7 +49,8 @@ while (!quit)
                 var deletingMeeting = MeetingController.chooseMeeting(ref quit, ref cancel);
                 if (deletingMeeting is null || quit || cancel)
                     break;
-                MeetingController.deleteMeeting(userName, deletingMeeting);
+                meetings = MeetingController.removeMeeting(userName, deletingMeeting);
+                MeetingController.updateMeetings(meetings, FixedTypes.Operation.Delete);
                 break;
 
             case 3:
@@ -62,7 +73,10 @@ while (!quit)
                 Console.WriteLine($"Write his starting date between {attendeeMeeting.StartDate.ToString("HH:mm")}" +
                     $" and {attendeeMeeting.EndDate.ToString("HH:mm")} with format of HH:mm");
                 DateTime date = Utils.readDate("HH:mm", ref quit);
-                MeetingController.addAttendee(name, attendeeMeeting, date);
+                date = new DateTime(attendeeMeeting.StartDate.Year, attendeeMeeting.StartDate.Month,
+                    attendeeMeeting.StartDate.Day, date.Hour, date.Minute, 0);
+                attendees = MeetingController.addAttendee(name, attendeeMeeting, date);
+                AttendeeController.updateAttendees(attendees, FixedTypes.Operation.Add);
                 break;
 
             case 4:
@@ -80,7 +94,10 @@ while (!quit)
                     Console.WriteLine($"{attendee.Name} does not contain any meetings.");
                     break;
                 }
-                AttendeeController.removeMeeting(attendee, removeAttendeeMeeting);
+                attendee = AttendeeController.removeMeeting(attendee, removeAttendeeMeeting);
+                attendees = AttendeeController.updateAttendee(attendee);
+                AttendeeController.updateAttendees(attendees, FixedTypes.Operation.Delete);
+
                 break;
 
             case 5:
@@ -107,8 +124,9 @@ while (!quit)
 
                 if (quit || cancel)
                     break;
-
-                var output = FilteringController.applyFiltering(filter, ref quit);
+                meetings = MeetingController.getMeetings();
+                attendees = AttendeeController.getAttendees();
+                var output = FilteringController.applyFiltering(meetings, attendees, filter, ref quit);
                 if (quit)
                     break;
 

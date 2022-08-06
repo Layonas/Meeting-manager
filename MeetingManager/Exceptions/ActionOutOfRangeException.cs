@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MeetingManager.Exceptions
 {
-    internal class ActionOutOfRangeException : Exception
+    public class ActionOutOfRangeException : Exception
     {
         public ActionOutOfRangeException(string? message) : base(message)
         {

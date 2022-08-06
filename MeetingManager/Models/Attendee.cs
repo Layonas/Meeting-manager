@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MeetingManager.Models
 {
-    internal class Attendee
+    public class Attendee
     {
         public string Name { get; set; }
         public IEnumerable<Meeting> Meetings { get; set; }

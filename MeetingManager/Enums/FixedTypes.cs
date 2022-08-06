@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MeetingManager.Enums
 {
-    internal class FixedTypes
+    public class FixedTypes
     {
         public enum Category
         {

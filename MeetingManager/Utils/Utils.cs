@@ -7,7 +7,7 @@ using MeetingManager.Exceptions;
 
 namespace MeetingManager.Utils
 {
-    internal class Utils
+    public class Utils
     {
         public static string login()
         {
