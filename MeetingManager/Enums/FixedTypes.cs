@@ -27,5 +27,15 @@ namespace MeetingManager.Enums
             Add,
             Delete
         }
+
+        public enum Filter
+        {
+            Description,
+            ResponsiblePerson,
+            Category,
+            Type,
+            Dates,
+            Attendees
+        }
     }
 }

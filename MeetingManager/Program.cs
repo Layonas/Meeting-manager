@@ -1,5 +1,6 @@
 ﻿using MeetingManager.Controller;
 using MeetingManager.Models;
+using System.Text.RegularExpressions;
 
 bool cancel = false;
 bool quit = false;
@@ -12,82 +13,98 @@ while (userName is null || userName.Length == 0)
     userName = Console.ReadLine();
 }
 
-Console.Clear();
-Console.WriteLine("Choose an action to make: \n");
-
 List<string> actions = new List<string>()
 { "Create a new meeting.", "Delete a meeting.", "Add a person to a meeting.",
     "Remove a person from a meeting.", "List and filter all meetings."};
 
-for (int i = 0; i < actions.Count; i++)
+while (!quit)
 {
-    Console.WriteLine((i + 1) + ": " + actions[i]);
-}
+    Console.WriteLine("Choose an action to make: \n");
 
-Console.WriteLine();
-int? action = null;
-
-while (action is null)
-{
-    try
+    for (int i = 0; i < actions.Count; i++)
     {
-        action = Convert.ToInt32(Console.ReadLine());
+        Console.WriteLine((i + 1) + ": " + actions[i]);
     }
-    catch (FormatException)
+
+    Console.WriteLine();
+    int? action = null;
+
+    while (action is null)
     {
-        Console.WriteLine("Please choose a valid action!");
-    }
-}
-
-switch (action)
-{
-    case 1:
-        MeetingController.createMeeting(ref quit, ref cancel);
-        break;
-
-    case 2:
-        Console.Clear();
-        var deletingMeeting = MeetingController.chooseMeeting();
-        if (deletingMeeting is null)
-            break;
-        MeetingController.deleteMeeting(userName, deletingMeeting);
-        break;
-
-    case 3:
-        Console.Clear();
-        Console.WriteLine("Enter the name of an attendee: ");
-        string? name = Console.ReadLine();
-        var attendeeMeeting = MeetingController.chooseMeeting();
-        if (attendeeMeeting is null)
-            break;
-        Console.WriteLine($"Write his starting date between {attendeeMeeting.StartDate.ToString("HH:mm")}" +
-            $" and {attendeeMeeting.EndDate.ToString("HH:mm")} with format of HH:mm");
-        DateTime date;
-        DateTime.TryParseExact(Console.ReadLine(), "HH:mm", null, System.Globalization.DateTimeStyles.None, out date);
-        MeetingController.addAttendee(name, attendeeMeeting, date);
-        break;
-
-    case 4:
-        Console.Clear();
-        Console.WriteLine("Choose an attendee:");
-        var attendee = AttendeeController.chooseAttendee();
-        if (attendee is null)
-            break;
-        Console.WriteLine("Choose a meeting to remove:");
-        var removeAttendeeMeeting = AttendeeController.chooseAttendeeMeeting(attendee);
-        if (removeAttendeeMeeting is null)
+        try
         {
-            Console.WriteLine($"{attendee.Name} does not contain any meetings.");
-            break;
+            action = Convert.ToInt32(Console.ReadLine());
         }
-        AttendeeController.removeMeeting(attendee, removeAttendeeMeeting);
-        break;
+        catch (FormatException)
+        {
+            Console.WriteLine("Please choose a valid action!");
+        }
+    }
 
-    case 5:
+    switch (action)
+    {
+        case 1:
+            MeetingController.createMeeting(ref quit, ref cancel);
+            break;
 
-        break;
+        case 2:
+            Console.Clear();
+            var deletingMeeting = MeetingController.chooseMeeting();
+            if (deletingMeeting is null)
+                break;
+            MeetingController.deleteMeeting(userName, deletingMeeting);
+            break;
+
+        case 3:
+            Console.Clear();
+            Console.WriteLine("Enter the name of an attendee: ");
+            string? name = Console.ReadLine();
+            var attendeeMeeting = MeetingController.chooseMeeting();
+            if (attendeeMeeting is null)
+                break;
+            Console.WriteLine($"Write his starting date between {attendeeMeeting.StartDate.ToString("HH:mm")}" +
+                $" and {attendeeMeeting.EndDate.ToString("HH:mm")} with format of HH:mm");
+            DateTime date;
+            DateTime.TryParseExact(Console.ReadLine(), "HH:mm", null, System.Globalization.DateTimeStyles.None, out date);
+            MeetingController.addAttendee(name, attendeeMeeting, date);
+            break;
+
+        case 4:
+            Console.Clear();
+            Console.WriteLine("Choose an attendee:");
+            var attendee = AttendeeController.chooseAttendee();
+            if (attendee is null)
+                break;
+            Console.WriteLine("Choose a meeting to remove:");
+            var removeAttendeeMeeting = AttendeeController.chooseAttendeeMeeting(attendee);
+            if (removeAttendeeMeeting is null)
+            {
+                Console.WriteLine($"{attendee.Name} does not contain any meetings.");
+                break;
+            }
+            AttendeeController.removeMeeting(attendee, removeAttendeeMeeting);
+            break;
+
+        case 5:
+            Console.Clear();
+            Console.WriteLine("Apply a filter? yes/no");
+            var yesNO = Console.ReadLine();
+            if (yesNO.CompareTo("yes") != 0)
+            {
+                MeetingController.ListMeeting(MeetingController.getMeetings());
+                break;
+            }
+
+            var filter = FilteringController.chooseFilter();
+
+            var output = FilteringController.applyFiltering(filter);
+
+            MeetingController.ListMeeting(output);
+
+            break;
+    }
+
+    Console.WriteLine("\nPress any key to continue...");
+    Console.ReadKey();
+    Console.Clear();
 }
-
-//while (!quit)
-//{
-//}

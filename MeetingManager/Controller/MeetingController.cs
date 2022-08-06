@@ -180,5 +180,14 @@ namespace MeetingManager.Controller
 
             AttendeeController.updateAttendees(attendees, FixedTypes.Operation.Add);
         }
+
+        public static void ListMeeting(IEnumerable<Meeting> meetings)
+        {
+            if (meetings is null || meetings.Count() == 0)
+                Console.WriteLine("There are no meetings.");
+
+            for (int i = 0; i < meetings.Count(); i++)
+                Console.WriteLine((i + 1) + $":\n{meetings.ElementAt(i)}");
+        }
     }
 }
