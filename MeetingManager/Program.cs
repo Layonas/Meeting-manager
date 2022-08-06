@@ -11,6 +11,7 @@ List<string> actions = new List<string>()
     "Remove a person from a meeting.", "List and filter all meetings."};
 
 var userName = Utils.login();
+Console.Clear();
 
 while (!quit)
 {
