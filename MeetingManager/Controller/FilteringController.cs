@@ -14,7 +14,7 @@ namespace MeetingManager.Controller
         private static List<string> filterOptions = new List<string>() { "description", "responsible person",
             "category", "type", "dates", "number of attendees"};
 
-        public static FixedTypes.Filter chooseFilter()
+        public static FixedTypes.Filter chooseFilter(ref bool quit, ref bool cancel)
         {
             var filters = Enum.GetValues(typeof(FixedTypes.Filter)).Cast<FixedTypes.Filter>();
 
@@ -23,12 +23,15 @@ namespace MeetingManager.Controller
                 Console.WriteLine((i + 1) + ": " + filters.ElementAt(i).ToString());
             }
 
-            var filterIndex = Convert.ToInt32(Console.ReadLine());
+            var filterIndex = Utils.Utils.action(1, filters.Count(), ref quit, ref cancel);
+
+            if (quit || cancel)
+                return FixedTypes.Filter.Type;
 
             return filters.ElementAt(filterIndex - 1);
         }
 
-        public static IEnumerable<Meeting> applyFiltering(FixedTypes.Filter filter)
+        public static IEnumerable<Meeting> applyFiltering(FixedTypes.Filter filter, ref bool quit)
         {
             var filteredMeetings = Enumerable.Empty<Meeting>();
             switch (filter)
@@ -36,27 +39,32 @@ namespace MeetingManager.Controller
                 case FixedTypes.Filter.Description:
                     Console.WriteLine("Write description to filter by:");
                     var description = Console.ReadLine();
+                    if (description.CompareTo("quit") == 0)
+                    {
+                        quit = true;
+                        break;
+                    }
                     filteredMeetings = filterByDescription(description);
                     break;
 
                 case FixedTypes.Filter.ResponsiblePerson:
-                    filteredMeetings = filterByResposiblePerson();
+                    filteredMeetings = filterByResposiblePerson(ref quit);
                     break;
 
                 case FixedTypes.Filter.Category:
-                    filteredMeetings = filterByCategory();
+                    filteredMeetings = filterByCategory(ref quit);
                     break;
 
                 case FixedTypes.Filter.Type:
-                    filteredMeetings = filterByType();
+                    filteredMeetings = filterByType(ref quit);
                     break;
 
                 case FixedTypes.Filter.Dates:
-                    filteredMeetings = filterByDates();
+                    filteredMeetings = filterByDates(ref quit);
                     break;
 
                 case FixedTypes.Filter.Attendees:
-                    filteredMeetings = filterByAttendees();
+                    filteredMeetings = filterByAttendees(ref quit);
                     break;
             }
 
@@ -72,19 +80,22 @@ namespace MeetingManager.Controller
             return meetings;
         }
 
-        private static IEnumerable<Meeting> filterByResposiblePerson()
+        private static IEnumerable<Meeting> filterByResposiblePerson(ref bool quit)
         {
             var meetings = MeetingController.getMeetings();
 
             Console.WriteLine("Choose the person to filter by:");
-            var person = AttendeeController.chooseAttendee();
+            bool cancel = false;
+            var person = AttendeeController.chooseAttendee(ref quit, ref cancel);
+            if (quit)
+                return Enumerable.Empty<Meeting>();
 
             meetings = meetings.Where(m => m.ResponsiblePerson.CompareTo(person.Name) == 0);
 
             return meetings;
         }
 
-        private static IEnumerable<Meeting> filterByCategory()
+        private static IEnumerable<Meeting> filterByCategory(ref bool quit)
         {
             var categories = Enum.GetValues(typeof(FixedTypes.Category)).Cast<FixedTypes.Category>();
 
@@ -95,12 +106,14 @@ namespace MeetingManager.Controller
                 Console.WriteLine((i + 1) + ": " + categories.ElementAt(i).ToString());
             }
 
-            var categoryIndex = Convert.ToInt32(Console.ReadLine());
+            var categoryIndex = Utils.Utils.action(1, categories.Count(), ref quit);
+            if (quit)
+                return Enumerable.Empty<Meeting>();
 
             return MeetingController.getMeetings().Where(m => m.Category == categories.ElementAt(categoryIndex - 1));
         }
 
-        private static IEnumerable<Meeting> filterByType()
+        private static IEnumerable<Meeting> filterByType(ref bool quit)
         {
             var types = Enum.GetValues(typeof(FixedTypes.Type)).Cast<FixedTypes.Type>();
 
@@ -111,19 +124,31 @@ namespace MeetingManager.Controller
                 Console.WriteLine((i + 1) + ": " + types.ElementAt(i).ToString());
             }
 
-            var categoryIndex = Convert.ToInt32(Console.ReadLine());
+            var typeIndex = Utils.Utils.action(1, types.Count(), ref quit);
+            if (quit)
+                return Enumerable.Empty<Meeting>();
 
-            return MeetingController.getMeetings().Where(m => m.Type == types.ElementAt(categoryIndex - 1));
+            return MeetingController.getMeetings().Where(m => m.Type == types.ElementAt(typeIndex - 1));
         }
 
-        private static IEnumerable<Meeting> filterByDates()
+        private static IEnumerable<Meeting> filterByDates(ref bool quit)
         {
             var pattern = "yyyy-MM-dd";
             Console.WriteLine($"Date format should be: {pattern}");
             Console.WriteLine("Enter starting date: ");
             var startDateString = Console.ReadLine();
+            if (startDateString.CompareTo("quit") == 0)
+            {
+                quit = true;
+                return Enumerable.Empty<Meeting>();
+            }
             Console.WriteLine("Enter ending date: ");
             var endDateString = Console.ReadLine();
+            if (endDateString.CompareTo("quit") == 0)
+            {
+                quit = true;
+                return Enumerable.Empty<Meeting>();
+            }
             DateTime startDate, endDate;
             bool start = false, end = false;
 
@@ -159,7 +184,7 @@ namespace MeetingManager.Controller
             return meetings;
         }
 
-        private static IEnumerable<Meeting> filterByAttendees()
+        private static IEnumerable<Meeting> filterByAttendees(ref bool quit)
         {
             string test = ">3?<7";
             Console.WriteLine("Enter expression to filter by attendee count:");
@@ -168,6 +193,11 @@ namespace MeetingManager.Controller
             Console.WriteLine("Example: <4 - meaning less than 4\n");
 
             var input = Console.ReadLine();
+            if (input.CompareTo("quit") == 0)
+            {
+                quit = true;
+                return Enumerable.Empty<Meeting>();
+            }
 
             Regex pattern = new Regex(@"^(?<left>[<>])(?<leftNumber>\d+)(\?(?<right><)(?<rightNumber>\d+)$)?");
 

@@ -37,5 +37,39 @@
     "AttendTime": [
       "2022-08-05T10:20:00"
     ]
+  },
+  {
+    "Name": "Tomas",
+    "Meetings": [
+      {
+        "Name": "Talking",
+        "ResponsiblePerson": "Tomas",
+        "Description": "Talking about things",
+        "Category": 2,
+        "Type": 0,
+        "StartDate": "2020-02-10T10:30:00",
+        "EndDate": "2020-02-10T11:20:00"
+      }
+    ],
+    "AttendTime": [
+      "2020-02-10T10:30:00"
+    ]
+  },
+  {
+    "Name": "Domas",
+    "Meetings": [
+      {
+        "Name": "Speaking",
+        "ResponsiblePerson": "Domas",
+        "Description": "Speaking about speaking",
+        "Category": 2,
+        "Type": 0,
+        "StartDate": "2020-02-10T10:20:00",
+        "EndDate": "2020-02-10T10:40:00"
+      }
+    ],
+    "AttendTime": [
+      "2020-02-10T10:20:00"
+    ]
   }
 ]

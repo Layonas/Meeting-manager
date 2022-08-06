@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using MeetingManager.Utils;
 
 namespace MeetingManager.Controller
 {
@@ -51,9 +52,11 @@ namespace MeetingManager.Controller
                 Indented = true,
                 SkipValidation = true
             }), attendees);
+
+            writer.Close();
         }
 
-        public static Attendee? chooseAttendee()
+        public static Attendee? chooseAttendee(ref bool quit, ref bool cancel)
         {
             var attendees = getAttendees();
 
@@ -65,12 +68,14 @@ namespace MeetingManager.Controller
                 Console.WriteLine((i + 1) + $": {attendees.ElementAt(i).Name}");
             }
 
-            int index = Convert.ToInt32(Console.ReadLine());
+            int index = Utils.Utils.action(1, attendees.Count(), ref quit, ref cancel);
+            if (quit || cancel)
+                return null;
 
             return attendees.ElementAt(index - 1);
         }
 
-        public static Meeting? chooseAttendeeMeeting(Attendee attendee)
+        public static Meeting? chooseAttendeeMeeting(Attendee attendee, ref bool quit)
         {
             if (attendee.Meetings.Count() == 0)
                 return null;
@@ -80,7 +85,10 @@ namespace MeetingManager.Controller
                 Console.WriteLine((i + 1) + $":\n{attendee.Meetings.ElementAt(i)}");
             }
 
-            int index = Convert.ToInt32(Console.ReadLine());
+            int index = Utils.Utils.action(1, attendee.Meetings.Count(), ref quit);
+
+            if (quit)
+                return null;
 
             return attendee.Meetings.ElementAt(index - 1);
         }

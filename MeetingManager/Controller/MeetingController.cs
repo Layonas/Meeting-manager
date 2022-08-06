@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MeetingManager.Models;
 using MeetingManager.Enums;
+using MeetingManager.Utils;
 using System.Text.Json;
 
 namespace MeetingManager.Controller
@@ -25,12 +26,24 @@ namespace MeetingManager.Controller
 
             Console.WriteLine("Write a meeting name:");
             var name = Console.ReadLine();
+            cancel = name.CompareTo("cancel") == 0 ? true : false;
+            quit = name.CompareTo("quit") == 0 ? true : false;
+            if (quit)
+                return;
+            if (cancel)
+                return;
 
             Console.WriteLine("Write a responsible person:");
             var rp = Console.ReadLine();
+            quit = rp.CompareTo("quit") == 0 ? true : false;
+            if (quit)
+                return;
 
             Console.WriteLine("Write a meeting description:");
             var description = Console.ReadLine();
+            quit = description.CompareTo("quit") == 0 ? true : false;
+            if (quit)
+                return;
 
             Console.WriteLine("Pick a category:");
             var categories = Enum.GetValues(typeof(FixedTypes.Category))
@@ -41,7 +54,9 @@ namespace MeetingManager.Controller
                 Console.WriteLine((i + 1) + ": " + categories.ElementAt(i).ToString());
             }
 
-            var categoryIndex = Convert.ToInt32(Console.ReadLine());
+            var categoryIndex = Utils.Utils.action(1, categories.Count(), ref quit);
+            if (quit)
+                return;
 
             var category = categories.ElementAt(categoryIndex - 1);
 
@@ -52,21 +67,27 @@ namespace MeetingManager.Controller
                 Console.WriteLine((i + 1) + ": " + types.ElementAt(i).ToString());
             }
 
-            var typeIndex = Convert.ToInt32(Console.ReadLine());
+            var typeIndex = Utils.Utils.action(1, types.Count(), ref quit);
+            if (quit)
+                return;
 
             var type = types.ElementAt(typeIndex - 1);
 
-            DateTime startDate;
             string pattern = "yyyy-MM-dd HH:mm";
 
             Console.WriteLine($"Write a starting date for the meeting with format of {pattern}:");
-            DateTime.TryParseExact(Console.ReadLine(), pattern, null, System.Globalization.DateTimeStyles.None, out startDate);
+            DateTime startDate = Utils.Utils.readDate(pattern, ref quit);
+            if (quit)
+                return;
 
-            DateTime endDate;
             Console.WriteLine($"Write a ending date for the meeting with format of {pattern}:");
-            DateTime.TryParseExact(Console.ReadLine(), pattern, null, System.Globalization.DateTimeStyles.None, out endDate);
+            DateTime endDate = Utils.Utils.readDate(pattern, ref quit);
+            if (quit)
+                return;
 
             Meeting meeting = new Meeting(name, rp, description, category, type, startDate, endDate);
+
+            addAttendee(rp, meeting, startDate);
 
             saveMeeting(meeting);
         }
@@ -111,7 +132,7 @@ namespace MeetingManager.Controller
             }
         }
 
-        public static Meeting? chooseMeeting()
+        public static Meeting? chooseMeeting(ref bool quit, ref bool cancel)
         {
             var meetings = getMeetings();
 
@@ -128,7 +149,9 @@ namespace MeetingManager.Controller
                 Console.WriteLine((i + 1) + $":\n{meetings.ElementAt(i)}");
             }
 
-            int index = Convert.ToInt32(Console.ReadLine());
+            int index = Utils.Utils.action(1, meetings.Count(), ref quit, ref cancel);
+            if (quit || cancel)
+                return null;
 
             return meetings?.ElementAt(index - 1);
         }
@@ -163,8 +186,15 @@ namespace MeetingManager.Controller
                 var attendee = attendees.First(a => a.Name.CompareTo(checkAttendee.Name) == 0);
                 if (attendee.Meetings.Contains(meeting))
                 {
-                    Console.WriteLine($"{name} is already in this meeting");
+                    Console.WriteLine($"{name} is already in this meeting.");
                     return;
+                }
+                else if (attendee.Meetings.Any(m => m.StartDate <= meeting.StartDate && m.EndDate >= meeting.StartDate
+                || m.StartDate <= meeting.StartDate && m.EndDate <= meeting.EndDate && m.EndDate >= meeting.StartDate
+                || m.StartDate <= meeting.EndDate && m.EndDate >= meeting.EndDate
+                || m.StartDate >= meeting.StartDate && m.EndDate <= meeting.EndDate))
+                {
+                    Console.WriteLine($"{name} has an intersecting meeting.");
                 }
                 else
                 {
