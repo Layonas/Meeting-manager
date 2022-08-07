@@ -51,6 +51,14 @@ while (!quit)
                 if (deletingMeeting is null || quit || cancel)
                     break;
                 meetings = MeetingController.removeMeeting(userName, deletingMeeting);
+                if (meetings.Count() == 0)
+                    break;
+                var attendee = AttendeeController.getAttendee(userName);
+                attendee = AttendeeController.removeMeeting(attendee, deletingMeeting, FixedTypes.AttendeeAction.MeetingRemove);
+                if (attendee.Equals(new Attendee()))
+                    break;
+                attendees = AttendeeController.updateAttendee(attendee);
+                AttendeeController.updateAttendees(attendees, FixedTypes.Operation.Delete);
                 MeetingController.updateMeetings(meetings, FixedTypes.Operation.Delete);
                 break;
 
@@ -83,7 +91,7 @@ while (!quit)
             case 4:
                 Console.Clear();
                 Console.WriteLine("Choose an attendee:");
-                var attendee = AttendeeController.chooseAttendee(ref quit, ref cancel);
+                attendee = AttendeeController.chooseAttendee(ref quit, ref cancel);
                 if (attendee is null)
                     break;
                 Console.WriteLine("Choose a meeting to remove:");
@@ -95,7 +103,9 @@ while (!quit)
                     Console.WriteLine($"{attendee.Name} does not contain any meetings.");
                     break;
                 }
-                attendee = AttendeeController.removeMeeting(attendee, removeAttendeeMeeting);
+                attendee = AttendeeController.removeMeeting(attendee, removeAttendeeMeeting, FixedTypes.AttendeeAction.AttendeeRemove);
+                if (attendee.Equals(new Attendee()))
+                    break;
                 attendees = AttendeeController.updateAttendee(attendee);
                 AttendeeController.updateAttendees(attendees, FixedTypes.Operation.Delete);
 

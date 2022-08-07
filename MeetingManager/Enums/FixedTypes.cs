@@ -37,5 +37,11 @@ namespace MeetingManager.Enums
             Dates,
             Attendees
         }
+
+        public enum AttendeeAction
+        {
+            AttendeeRemove,
+            MeetingRemove
+        }
     }
 }

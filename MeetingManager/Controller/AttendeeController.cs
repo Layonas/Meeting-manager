@@ -93,16 +93,16 @@ namespace MeetingManager.Controller
             return attendee.Meetings.ElementAt(index - 1);
         }
 
-        public static Attendee removeMeeting(Attendee attendee, Meeting meeting)
+        public static Attendee removeMeeting(Attendee attendee, Meeting meeting, FixedTypes.AttendeeAction action)
         {
-            if (meeting.ResponsiblePerson.CompareTo(attendee.Name) == 0)
+            if (meeting.ResponsiblePerson.CompareTo(attendee.Name) == 0 && action == FixedTypes.AttendeeAction.AttendeeRemove)
             {
                 Console.WriteLine($"Cannot remove the attendee from the meeting he is responsible!");
                 return new Attendee();
             }
             int index = -1;
             for (int i = 0; i < attendee.Meetings.Count(); i++)
-                index = attendee.Meetings.ElementAt(i) == meeting ? i : -1;
+                index = attendee.Meetings.ElementAt(i).Equals(meeting) ? i : -1;
 
             attendee.Meetings = attendee.Meetings.Where(m => !m.Equals(meeting));
             attendee.AttendTime.RemoveAt(index);
@@ -118,6 +118,11 @@ namespace MeetingManager.Controller
             attendees.First(a => a.Equals(attendee)).AttendTime = attendee.AttendTime;
 
             return attendees;
+        }
+
+        public static Attendee getAttendee(string userName)
+        {
+            return getAttendees().First(u => u.Name.CompareTo(userName) == 0);
         }
     }
 }

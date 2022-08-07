@@ -112,7 +112,10 @@ namespace MeetingManager.Utils
                 {
                     string input = Console.ReadLine();
                     if (input.CompareTo("quit") == 0)
+                    {
+                        quit = true;
                         return date;
+                    }
                     DateTime.TryParseExact(input, pattern, null, System.Globalization.DateTimeStyles.None, out date);
                     flag = true;
                 }

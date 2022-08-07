@@ -15,10 +15,20 @@
         "Type": 0,
         "StartDate": "2020-02-10T10:00:00",
         "EndDate": "2020-02-10T11:00:00"
+      },
+      {
+        "Name": "Software Update",
+        "ResponsiblePerson": "Jonas",
+        "Description": "New software update realease date",
+        "Category": 0,
+        "Type": 0,
+        "StartDate": "2021-10-02T13:00:00",
+        "EndDate": "2021-10-02T14:00:00"
       }
     ],
     "AttendTime": [
-      "2022-08-05T10:00:00"
+      "2022-08-05T10:00:00",
+      "2021-10-02T13:00:00"
     ]
   },
   {
@@ -71,5 +81,10 @@
     "AttendTime": [
       "2020-02-10T10:20:00"
     ]
+  },
+  {
+    "Name": "asd",
+    "Meetings": [],
+    "AttendTime": []
   }
 ]

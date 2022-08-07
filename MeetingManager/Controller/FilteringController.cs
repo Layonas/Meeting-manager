@@ -216,8 +216,12 @@ namespace MeetingManager.Controller
                 foreach (var m in a.Meetings)
                 {
                     foreach (var meeting in meetings)
+                    {
                         if (meeting.Equals(m))
+                        {
                             pairs[meeting] = pairs[meeting] + 1;
+                        }
+                    }
                 }
             }
 
@@ -243,12 +247,16 @@ namespace MeetingManager.Controller
                 if (left.CompareTo(">") == 0)
                 {
                     int leftNumber = Convert.ToInt32(leftNumberString);
+                    Console.WriteLine(leftNumber);
 
                     foreach (var entry in pairs)
+                    {
+                        Console.WriteLine(entry.Value);
                         if (entry.Value > leftNumber)
                         {
                             filtered = filtered.Append(entry.Key);
                         }
+                    }
                 }
                 else
                 {

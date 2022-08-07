@@ -89,7 +89,7 @@ test
             attendee.Meetings = attendee.Meetings.Append(meeting);
             attendee.AttendTime.Add(meeting.StartDate);
 
-            AttendeeController.removeMeeting(attendee, meeting);
+            AttendeeController.removeMeeting(attendee, meeting, FixedTypes.AttendeeAction.AttendeeRemove);
             string expected = @"Cannot remove the attendee from the meeting he is responsible!
 ";
             Assert.Equal(expected, output.ToString());
@@ -103,7 +103,7 @@ test
             attendee.Meetings = attendee.Meetings.Append(meeting);
             attendee.AttendTime.Add(meeting.StartDate);
 
-            attendee = AttendeeController.removeMeeting(attendee, meeting);
+            attendee = AttendeeController.removeMeeting(attendee, meeting, FixedTypes.AttendeeAction.AttendeeRemove);
 
             Assert.DoesNotContain(meeting, attendee.Meetings);
             meeting.ResponsiblePerson = "test";
